@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!-- Following code has been commented with appropriate comments for your reference. -->
+<html lang="en">
+  <head>
+    <!-- Set the character encoding to UTF-8 -->
+    <meta charset="UTF-8" />
+    <!-- Set the viewport for responsiveness -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- Link the external stylesheet for styling -->
+    <link rel="stylesheet" href="./Navbar.css" />
+  </head>
+  <body>
+    <nav>
+      <!-- Navigation logo section -->
+      <div class="nav__logo">
+        <!-- Link to the home page -->
+        <a href="/">
+          StayHealthy
+          <!-- Insert an SVG icon of a doctor with a stethoscope -->
+          <svg
+            height="26"
+            width="26"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <linearGradient
+              id="linear-gradient"
+              gradientUnits="userSpaceOnUse"
+              x1="3.25"
+              x2="60.75"
+              y1="32"
+              y2="32"
+            >
+              <stop offset="0" stop-color="#5bb4f6" />
+              <stop offset=".61" stop-color="#2191e5" />
+              <stop offset="1" stop-color="#007edb" />
+            </linearGradient>
+            <g id="Layer_57" data-name="Layer 57">
+              <circle cx="32" cy="32" fill="url(#linear-gradient)" r="28.75" />
+              <path
+                d="m54.2 27.51a4.4 4.4 0 1 0 -5.15 4.32v10.76a10.64 10.64 0 1 1 -21.27 0v-4.9a10.76 10.76 0 0 0 10-10.69v-7.37a3.23 3.23 0 1 0 -1.5 0v7.37a9.25 9.25 0 0 1 -18.5 0v-7.37a3.23 3.23 0 1 0 -1.5 0v7.37a10.76 10.76 0 0 0 10 10.71v4.9a12.14 12.14 0 1 0 24.27 0v-10.78a4.39 4.39 0 0 0 3.65-4.32zm-18.9-11a1.73 1.73 0 1 1 1.7 1.72 1.74 1.74 0 0 1 -1.7-1.73zm-20 0a1.73 1.73 0 1 1 1.7 1.72 1.74 1.74 0 0 1 -1.7-1.73zm34.5 13.9a2.9 2.9 0 1 1 2.9-2.9 2.9 2.9 0 0 1 -2.9 2.9z"
+                fill="#fff"
+              />
+            </g>
+          </svg>
+        </a>
+      </div>
+      <!-- Navigation icon section with an onClick event listener -->
+      <div class="nav__icon" onClick="{handleClick}">
+        <!-- Font Awesome icon for bars (hamburger menu) -->
+        <i class="fa fa-times fa fa-bars"></i>
+      </div>
+
+      <!-- Unordered list for navigation links with 'active' class -->
+      <ul class="nav__links active">
+        <!-- List item for the 'Home' link -->
+        <li class="link">
+          <a href="../Landing_Page/LandingPage.html">Home</a>
+        </li>
+        <!-- List item for the 'Appointments' link -->
+        <li class="link">
+          <a href="#">Appointments</a>
+        </li>
+        <!-- List item for the 'Sign Up' link with a button -->
+        <li class="link">
+          <a href="../Sign_Up//Sign_Up.html">
+            <button class="btn1">Sign Up</button>
+          </a>
+        </li>
+        <!-- List item for the 'Login' link with a button -->
+        <li class="link">
+          <a href="../Login/Login.html">
+            <button class="btn1">Login</button>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </body>
+</html>
