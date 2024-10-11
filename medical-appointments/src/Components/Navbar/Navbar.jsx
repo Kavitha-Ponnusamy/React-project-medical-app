@@ -1,50 +1,98 @@
-import React from "react"; // Importing the necessary modules from React library
-import "./Navbar.css";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import "./Navbar.css";
+
 const Navbar = () => {
+  const [click, setClick] = useState(false);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const handleClick = () => setClick(!click);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("auth-token");
+    sessionStorage.removeItem("name");
+    sessionStorage.removeItem("email");
+    sessionStorage.removeItem("phone");
+    // remove email phone
+    localStorage.removeItem("doctorData");
+    setIsLoggedIn(false);
+    // setUsername("");
+
+    // Remove the reviewFormData from local storage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key.startsWith("reviewFormData_")) {
+        localStorage.removeItem(key);
+      }
+    }
+    setEmail("");
+    window.location.reload();
+  };
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+  useEffect(() => {
+    const storedemail = sessionStorage.getItem("email");
+
+    if (storedemail) {
+      setIsLoggedIn(true);
+      setUsername(storedemail);
+    }
+  }, []);
   return (
-    <>
-      <nav>
-        {/*  Navigation logo section */}
-        <div class="nav__logo">
-          {/* Link to the home page */}
-          <Link to="/">StayHealthy</Link>
-
-          {/* Insert an SVG icon of a doctor with a stethoscope */}
-        </div>
-        {/* Navigation icon section with an onClick event listener */}
-        <div class="nav__icon" onClick="{handleClick}">
-          {/*Font Awesome icon for bars (hamburger menu) */}
-          <i class="fa fa-times fa fa-bars"></i>
-        </div>
-
-        {/*Unordered list for navigation links with 'active' class*/}
-        <ul class="nav__links active">
-          {/* List item for the 'Home' link */}
-          <li class="link">
-            <Link to="/">Home</Link>
-          </li>
-          {/* List item for the 'Appointments' link */}
-          <li class="link">
-            <Link to="/appointments">Appointments</Link>
-          </li>
-          {/*  List item for the 'Sign Up' link with a button */}
-          <li class="link">
-            <Link to="/signup">
-              <button class="btn1">Sign Up</button>
-            </Link>
-          </li>
-          {/* List item for the 'Login' link with a button */}
-          <li class="link">
-            <Link to="/login">
-              {" "}
-              <button class="btn1">Login</button>
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </>
+    <nav>
+      <div className="nav__logo">
+        <Link to="/">
+          StayHealthy{" "}
+          <i style={{ color: "#2190FF" }} className="fa fa-user-md"></i>
+        </Link>
+        <span>.</span>
+      </div>
+      <div className="nav__icon" onClick={handleClick}>
+        <i className={click ? "fa fa-times" : "fa fa-bars"}></i>
+      </div>
+      <ul className={click ? "nav__links active" : "nav__links"}>
+        <li className="link">
+          <Link to="/">Home</Link>
+        </li>
+        <li className="link">
+          <Link to="/search/doctors">Appointments</Link>
+        </li>
+        <li className="link">
+          <Link to="/healthblog">Health Blog</Link>
+        </li>
+        <li className="link">
+          <Link to="/reviews">Reviews</Link>
+        </li>
+        {isLoggedIn ? (
+          <>
+            <li className="link">
+              <button className="btn2" onClick={handleLogout}>
+                Logout
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li className="link">
+              <Link to="/signup">
+                <button className="btn1">Sign Up</button>
+              </Link>
+            </li>
+            <li className="link">
+              <Link to="/login">
+                <button className="btn1">Login</button>
+              </Link>
+            </li>
+          </>
+        )}
+      </ul>
+    </nav>
   );
 };
+
 export default Navbar;
