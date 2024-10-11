@@ -3,11 +3,15 @@ import React, { useState } from "react";
 const AppointmentFormIC = ({ doctorName, doctorSpeciality, onSubmit }) => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ name, phoneNumber });
+    onSubmit({ name, phoneNumber, date, time });
     setName("");
     setPhoneNumber("");
+    setTime("");
   };
 
   return (
@@ -32,7 +36,35 @@ const AppointmentFormIC = ({ doctorName, doctorSpeciality, onSubmit }) => {
           required
         />
       </div>
-      <button type="submit">Book Now</button>
+      <div className="form-group">
+        <label htmlFor="date">Date of Appointment:</label>
+        <input
+          type="date"
+          id="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="time">Book Time Slot:</label>
+
+        <select
+          name="time"
+          id="time"
+          required
+          onChange={(e) => setTime(e.target.value)}
+        >
+          <option value="">Select a time slot</option>
+          <option value="10:30 AM">10:30 AM</option>
+          <option value="11.30 AM">11.30 AM</option>
+          <option value="2:00 PM">2:00 PM</option>
+          <option value="3:00 PM">3:00 PM</option>
+        </select>
+      </div>
+      <div className="appt-submit-button">
+        <button type="submit">Book Now</button>
+      </div>
     </form>
   );
 };
