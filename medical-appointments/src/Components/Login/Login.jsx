@@ -1,109 +1,143 @@
-import React, { useState, useEffect } from "react"; // Importing the necessary modules from React library
-import "./Login.css";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../config";
+import "./Login.css";
 
 const Login = () => {
-  // State variables for email and password
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  // Get navigation function from react-router-dom
+  const [phone, setPhone] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
   const navigate = useNavigate();
-  // Check if user is already authenticated, then redirect to home page
   useEffect(() => {
     if (sessionStorage.getItem("auth-token")) {
       navigate("/");
     }
   }, []);
-  // Function to handle login form submission
   const login = async (e) => {
     e.preventDefault();
-    // Send a POST request to the login API endpoint
     const res = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        name: name,
         email: email,
+        phone: phone,
         password: password,
       }),
     });
-    // Parse the response JSON
+
     const json = await res.json();
     if (json.authtoken) {
-      // If authentication token is received, store it in session storage
       sessionStorage.setItem("auth-token", json.authtoken);
+      sessionStorage.setItem("name", name);
+      sessionStorage.setItem("phone", phone);
       sessionStorage.setItem("email", email);
-      // Redirect to home page and reload the window
+      // Redirect to home page
       navigate("/");
       window.location.reload();
     } else {
-      // Handle errors if authentication fails
       if (json.errors) {
         for (const error of json.errors) {
-          alert(error.msg);
+          console.error(error.msg);
         }
       } else {
-        alert(json.error);
+        console.error(json.error);
       }
     }
   };
 
   return (
-    <>
-      {/* Main container div for the page content */}
+    <div>
       <div className="container">
-        {/* Div for login grid layout */}
-        <div class="login-grid">
-          {/*  Div for login text */}
+        <div className="login-grid">
           <div className="login-text">
             <h2>Login</h2>
           </div>
-          {/* Additional login text with a link to Sign Up page */}
-          <div className="login-text">
-            Are you a new member? {"\u00A0"}
+          <div className="signup-text1">
+            Are you New Member?{" "}
             <span>
-              <Link to="/signup" style={{ color: "#2190ff" }}>
-                Sign Up Here
+              <Link to="/signup" style={{ color: "#2190FF" }}>
+                {" "}
+                Signup Here
               </Link>
             </span>
           </div>
-          <br />
-          {/*  Div for login form */}
+
           <div className="login-form">
             <form onSubmit={login}>
-              {/* Form group for email input */}
+              <div className="form-group">
+                <label htmlFor="username">UserName</label>
+                <input
+                  value={name}
+                  type="text"
+                  onChange={(e) => setName(e.target.value)}
+                  name="name"
+                  id="username"
+                  className="form-control"
+                  placeholder="Enter your username"
+                  required
+                  aria-describedby="helpId"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Phone</label>
+                <input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                  className="form-control"
+                  placeholder="Enter your phone number"
+                  required
+                  aria-describedby="helpId"
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input
-                  type="email"
-                  name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  name="email"
                   id="email"
                   className="form-control"
                   placeholder="Enter your email"
-                  aria-describedby="helpId"
                   required
+                  aria-describedby="helpId"
                 />
               </div>
-              {/*  Form group for password input */}
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
-                  name="password"
-                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  type={passwordVisible ? "text" : "password"}
+                  name="password"
+                  id="password"
                   className="form-control"
                   placeholder="Enter your password"
-                  aria-describedby="helpId"
                   required
+                  aria-describedby="helpId"
                 />
+                <div
+                  className="password-visibility"
+                  onClick={togglePasswordVisibility}
+                >
+                  <i
+                    class={passwordVisible ? "fa fa-eye" : "fa fa-eye-slash"}
+                  ></i>
+                </div>
               </div>
-              {/*  Button group for login and reset buttons */}
+
               <div className="btn-group">
                 <button
                   type="submit"
@@ -118,14 +152,21 @@ const Login = () => {
                   Reset
                 </button>
               </div>
-              <br />
-              {/*Additional login text for 'Forgot Password' option */}
-              <div className="login-text">Forgot Password?</div>
+              <div className="login-text">
+                Forget Password?{" "}
+                <span>
+                  <Link to="/signup" style={{ color: "#2190FF" }}>
+                    {" "}
+                    Signup Here
+                  </Link>
+                </span>
+              </div>
             </form>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
+
 export default Login;

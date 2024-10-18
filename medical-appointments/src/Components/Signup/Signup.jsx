@@ -1,20 +1,36 @@
-import React, { useState } from "react"; // Importing the necessary modules from React library
-import "./Sign_Up.css";
+import React, { useState } from "react";
+import "./SignUp.css";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../config";
 
-const Signup = () => {
-  // State variables using useState hook
+const SignUp = () => {
+  const [role, setRole] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [showerr, setShowerr] = useState(""); // State to show error messages
-  const navigate = useNavigate(); // Navigation hook from react-router
-  // Function to handle form submission
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
+  const updateSignupRoleText = (value) => {
+    setRole(value);
+  };
+
+  let signupRoleText = "";
+
+  if (role === "doctor") {
+    signupRoleText = "Signup as a Doctor";
+  } else if (role === "patient") {
+    signupRoleText = "Signup as a Patient";
+  }
+  const navigate = useNavigate();
+
   const register = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    // API Call to register user
+    e.preventDefault();
+
+    // API Call
     const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       headers: {
@@ -25,147 +41,161 @@ const Signup = () => {
         email: email,
         password: password,
         phone: phone,
+        role: role,
       }),
     });
-    const json = await response.json(); // Parse the response JSON
+    const json = await response.json();
     if (json.authtoken) {
-      // Store user data in session storage
       sessionStorage.setItem("auth-token", json.authtoken);
       sessionStorage.setItem("name", name);
+      // phone and email
       sessionStorage.setItem("phone", phone);
       sessionStorage.setItem("email", email);
-      // Redirect user to home page
+      // Redirect to home page
       navigate("/");
-      window.location.reload(); // Refresh the page
+      window.location.reload();
     } else {
       if (json.errors) {
         for (const error of json.errors) {
-          setShowerr(error.msg); // Show error messages
+          console.error(error.msg);
         }
       } else {
-        setShowerr(json.error);
+        console.error(json.error);
       }
     }
   };
 
   return (
-    <>
-      <div className="container" style={{ marginTop: "5%" }}>
-        {/* Main container with margin-top */}
-        <div className="signup-grid">
-          {/* Grid layout for sign-up form */}
-          <div className="signup-text">
-            {/* Title for the sign-up form */}
-            <h1>Sign Up</h1>
-          </div>
-          <div className="signup-text1">
-            {/* Text for existing members to log in */}
-            Already a member? {"\u00A0"}
-            <span>
-              <Link to="/login" style={{ color: "#2190ff" }}>
-                Login
-              </Link>
-            </span>
-          </div>
-          <div className="signup-form">
-            {/* Form for user sign-up */}
-            <form method="POST" onSubmit={register}>
-              {/* Start of the form */}
-
-              <div className="form-group">
-                {/* Form group for user's name */}
-                <label htmlFor="name">Name</label>
-                {/* Label for name input field */}
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  value={name}
+    <div className="container" style={{ marginTop: "5%" }}>
+      <div className="signup-grid">
+        <div className="signup-text">
+          <h1>Signup</h1>
+          {signupRoleText && (
+            <div className="signup-role">{signupRoleText}</div>
+          )}
+        </div>
+        <div className="signup-text1">
+          Already a member?{" "}
+          <span>
+            <Link to="/login" style={{ color: "#2190FF" }}>
+              {" "}
+              Login In
+            </Link>
+          </span>
+        </div>
+        <div className="signup-form">
+          <form method="POST" onSubmit={register}>
+            <div className="form-group">
+              <label htmlFor="role">Role</label>
+              <select
+                name="role"
+                id="role"
+                required
+                className="form-control"
+                onChange={(e) => updateSignupRoleText(e.target.value)}
+              >
+                <option value="">Select Role</option>
+                <option
+                  value="doctor"
                   onChange={(e) => setName(e.target.value)}
-                  required
-                  className="form-control"
-                  placeholder="Enter your name"
-                  aria-describedby="helpId"
-                />
-                {/* Text input field for name */}
-              </div>
-
-              <div className="form-group">
-                {/* Form group for user's phone number */}
-                <label htmlFor="phone">Phone</label>
-                {/* Label for phone input field */}
-                <input
-                  type="tel"
-                  name="phone"
-                  id="phone"
-                  onChange={(e) => setPhone(e.target.value)}
-                  value={phone}
-                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                  required
-                  className="form-control"
-                  placeholder="Enter your phone number"
-                  aria-describedby="helpId"
-                />
-                {/* Tel input field for phone number */}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="form-control"
-                  placeholder="Enter your email"
-                  aria-describedby="helpId"
-                />
-                {showerr && (
-                  <div className="err" style={{ color: "red" }}>
-                    {showerr}
-                  </div>
-                )}
-              </div>
-
-              <div className="form-group">
-                {/* Form group for user's password */}
-                <label htmlFor="password">Password</label>
-                {/* Label for password input field */}
-                <input
-                  name="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="form-control"
-                  placeholder="Enter your password"
-                  aria-describedby="helpId"
-                />
-                {/* Password input field */}
-              </div>
-
-              <div className="btn-group">
-                {/* Button group for form submission and reset */}
-                <button
-                  type="submit"
-                  className="btn btn-primary sm-1 mr-1 waves-effect waves-light"
                 >
-                  Submit
-                </button>
-                <button
-                  type="reset"
-                  className="btn btn-danger sm-1 waves-effect waves-light"
+                  Doctor
+                </option>
+                <option
+                  value="patient"
+                  onChange={(e) => setName(e.target.value)}
                 >
-                  Reset
-                </button>
+                  Patient
+                </option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="name">UserName</label>
+              <input
+                value={name}
+                type="text"
+                onChange={(e) => setName(e.target.value)}
+                name="name"
+                id="name"
+                minlength="4"
+                required
+                className="form-control"
+                placeholder="Enter your name"
+                aria-describedby="helpId"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                type="tel"
+                name="phone"
+                id="phone"
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                className="form-control"
+                placeholder="Enter your phone number"
+                aria-describedby="helpId"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                name="email"
+                id="email"
+                className="form-control"
+                required
+                placeholder="Enter your email"
+                aria-describedby="helpId"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={passwordVisible ? "text" : "password"}
+                required
+                minlength="8"
+                name="password"
+                id="password"
+                className="form-control"
+                placeholder="Enter your password"
+                aria-describedby="helpId"
+              />
+              <div
+                className="password-visibility"
+                onClick={togglePasswordVisibility}
+              >
+                <i
+                  class={passwordVisible ? "fa fa-eye" : "fa fa-eye-slash"}
+                ></i>
               </div>
-            </form>
-            {/* End of the form */}
-          </div>
+            </div>
+
+            <div className="btn-group">
+              <button
+                type="submit"
+                className="btn btn-primary mb-2 mr-1 waves-effect waves-light"
+              >
+                Submit
+              </button>
+              <button
+                type="reset"
+                className="btn btn-danger mb-2 waves-effect waves-light"
+              >
+                Reset
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
-export default Signup;
+
+export default SignUp;

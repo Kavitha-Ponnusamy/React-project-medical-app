@@ -1,5 +1,7 @@
 export const API_URL =
   window.location.hostname === "localhost"
-    ? "<add your theia server side url>"
-    : "add your theia server side url";
+    ? "http://localhost:8181"
+    : "https://stayhealthy-server.vercel.app";
+
+//export const API_URL = window.location.origin
 console.log("API_URL :", API_URL);
